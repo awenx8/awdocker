@@ -1,0 +1,5 @@
+.data/*
+!.data/.gitkeep
+
+# 本地密钥配置，避免密码误提交
+.env
