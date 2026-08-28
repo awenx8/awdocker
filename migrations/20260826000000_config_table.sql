@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS app_config (
 CREATE INDEX IF NOT EXISTS idx_app_config_group ON app_config (group_name);
 
 COMMENT ON TABLE app_config IS '统一应用配置表：所有应用配置按 group_name 分组、以键值行存储，作为唯一数据源';
-COMMENT ON COLUMN app_config.group_name IS '配置分组，如 app / server / log / feature / datasource';
+COMMENT ON COLUMN app_config.group_name IS '配置分组，如 app / server / log / feature';
 COMMENT ON COLUMN app_config.key IS '分组内的叶子键名，全局唯一由 (group_name, key) 保证';

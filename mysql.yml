@@ -1,0 +1,33 @@
+# MySQL 基础设施片段（单一真相源，供各应用仓 include）
+# 所有参数仅通过 env 注入，禁止任何硬编码；取值由各应用仓的 .env 提供。
+services:
+  mysql:
+    image: mysql:9.7
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --lower_case_table_names=1
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 30s
+    networks:
+      - awinfra
+
+volumes:
+  mysql-data:
+
+networks:
+  awinfra:
+    name: ${INFRA_NETWORK}

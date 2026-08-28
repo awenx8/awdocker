@@ -1,0 +1,28 @@
+# Redis 基础设施片段（单一真相源，供各应用仓 include）
+# 所有参数仅通过 env 注入，禁止任何硬编码；取值由各应用仓的 .env 提供。
+services:
+  redis:
+    image: redis:8.0
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "${REDIS_PORT}:6379"
+    command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    volumes:
+      - redis-data:/data
+    networks:
+      - awinfra
+
+volumes:
+  redis-data:
+
+networks:
+  awinfra:
+    name: ${INFRA_NETWORK}
