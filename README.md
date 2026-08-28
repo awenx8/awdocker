@@ -1,13 +1,12 @@
 # awdocker
 
-本地开发基础设施（Docker Compose）：MySQL、Redis、PostgreSQL，并以 PostgreSQL 作为统一配置数据源（sqlx 管理迁移）。
+本地开发基础设施（Docker Compose）：MySQL、Redis、PostgreSQL。
 
 ## 快速开始
 
 ```bash
 cp .env.example .env
 just up-all
-just setup-db
 ```
 
 ## 常用命令
@@ -16,9 +15,6 @@ just setup-db
 | --- | --- |
 | `just up-all` / `just down-all` | 启动/停止全部服务 |
 | `just up <svc>` / `just down <svc>` | 启动/停止单个服务（mysql/redis/postgres） |
-| `just setup-db` | 拉起 PostgreSQL → 建库 → 应用全部迁移 |
-| `just migrate` | 执行全部待执行迁移 |
-| `just migrate-new <name>` | 新建前向-only 迁移文件 |
 
 ## 作为新项目的共享基础设施（单一真相源）
 
@@ -49,8 +45,8 @@ just setup-db
         name: ${INFRA_NETWORK}
     ```
 
-    > 应用仓的 `awinfra` 必须带上 `name: ${INFRA_NETWORK}`，且其 `.env` 中的
-    > `INFRA_NETWORK` 要与 infra 片段一致，否则两端不在同一 Docker 网络，无法互通。
+   > 应用仓的 `awinfra` 必须带上 `name: ${INFRA_NETWORK}`，且其 `.env` 中的
+   > `INFRA_NETWORK` 要与 infra 片段一致，否则两端不在同一 Docker 网络，无法互通。
 
 3. 路径解析：本仓默认 `AWDOCKER_PATH=.docker`（独立子模块）。在 `awall` 聚合器内，
    各应用仓的 `justfile` 自动探测到 `../awdocker` 并复用顶层那份，无需嵌套子模块。

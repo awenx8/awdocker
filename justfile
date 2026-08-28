@@ -19,28 +19,6 @@ up-all:
 down-all:
     docker compose down
 
-# ──────────────────────────────────────────────
-# PostgreSQL 配置表（统一数据源）管理 — sqlx-cli
-# ──────────────────────────────────────────────
-
-# 首次创建数据库
-db-create:
-    sqlx database create --database-url ${POSTGRES_URL:?POSTGRES_URL 未设置，请在 .env 中提供}
-
-# 执行所有待执行迁移（前向-only，不可回退）
-migrate:
-    sqlx migrate run --database-url ${POSTGRES_URL:?POSTGRES_URL 未设置，请在 .env 中提供}
-
-# 新建一个前向-only 迁移文件: just migrate-new add_feature_flag
-migrate-new name:
-    sqlx migrate add {{name}} --database-url ${POSTGRES_URL:?POSTGRES_URL 未设置，请在 .env 中提供}
-
-# 建库并应用迁移的一键流程
-setup-db:
-    docker compose up -d postgres
-    just db-create
-    just migrate
-
 # 格式化(Biome + rumdl,自动改写)
 fmt:
     @echo ">> 格式化(js/ts + markdown)"
