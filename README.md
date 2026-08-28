@@ -21,18 +21,18 @@ just up-all
 基础设施定义拆为可 `include` 的片段：`postgres.yml` / `mysql.yml` / `redis.yml`。
 新根节点项目**不要重复定义**这些服务，而是复用本仓库：
 
-1. 把本仓库作为子模块加入新项目（独立克隆时使用）：
+1. 把本仓库作为子模块加入新项目（独立克隆时使用），统一置于 `vendor/` 下、以本仓名为目录：
 
    ```bash
-   git submodule add git@github.com:awenx8/awdocker.git .docker
+   git submodule add git@github.com:awenx8/awdocker.git vendor/awdocker
    ```
 
 2. 新项目的 `compose.yml` 用 `include` 拉取所需片段，自身只定义应用服务：
 
    ```yaml
    include:
-     - ${AWDOCKER_PATH:-.docker}/postgres.yml
-     - ${AWDOCKER_PATH:-.docker}/redis.yml
+     - ${AWDOCKER_PATH:-vendor/awdocker}/postgres.yml
+     - ${AWDOCKER_PATH:-vendor/awdocker}/redis.yml
 
     services:
       awserver:
@@ -47,10 +47,6 @@ just up-all
 
    > 应用仓的 `awinfra` 必须带上 `name: ${INFRA_NETWORK}`，且其 `.env` 中的
    > `INFRA_NETWORK` 要与 infra 片段一致，否则两端不在同一 Docker 网络，无法互通。
-
-3. 路径解析：本仓默认 `AWDOCKER_PATH=.docker`（独立子模块）。在 `awall` 聚合器内，
-   各应用仓的 `justfile` 自动探测到 `../awdocker` 并复用顶层那份，无需嵌套子模块。
-   片段内服务名固定为 `postgres`/`mysql`/`redis`，应用仓直接 `depends_on` 即可。
 
 > 片段内所有参数（密码、端口、库名、网络名）均**只通过 env 注入，不含任何硬编码默认值**；
 > 各应用仓用自身 `.env` 提供，基础设施片段本身只维护一份。共享网络名由 `INFRA_NETWORK`
