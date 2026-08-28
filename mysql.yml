@@ -2,7 +2,7 @@
 # 所有参数仅通过 env 注入，禁止任何硬编码；取值由各应用仓的 .env 提供。
 services:
   mysql:
-    image: mysql:9.7
+    image: ${MYSQL_IMAGE:-mysql:9.7}
     restart: unless-stopped
     environment:
       TZ: Asia/Shanghai

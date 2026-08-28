@@ -2,7 +2,7 @@
 # 所有参数仅通过 env 注入，禁止任何硬编码；取值由各应用仓的 .env 提供。
 services:
   redis:
-    image: redis:8.0
+    image: ${REDIS_IMAGE:-redis:8.0}
     restart: unless-stopped
     environment:
       TZ: Asia/Shanghai
